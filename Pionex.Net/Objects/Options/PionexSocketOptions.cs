@@ -13,7 +13,9 @@ namespace Pionex.Net.Objects.Options
         internal static PionexSocketOptions Default { get; set; } = new PionexSocketOptions()
         {
             Environment = PionexEnvironment.Live,
-            SocketSubscriptionsCombineTarget = 10
+            MaxSocketConnections = 10,
+            SocketSubscriptionsCombineTarget = 100,
+            SocketIndividualSubscriptionCombineTarget = 100
         };
 
         /// <summary>

@@ -12,17 +12,29 @@ namespace Pionex.Net.Objects.Sockets.Subscriptions
     {
         public PionexPingSubscription(ILogger logger) : base(logger, false)
         {
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<PionexPing>("PING", HandlePing);
+            MessageRouter = MessageRouter.CreateWithoutTopicFilter<PionexSocketOperation>(["PING", "CLOSE"], HandleSocketOperation);
         }
 
-        private CallResult? HandlePing(SocketConnection connection, DateTime time, string? originalData, PionexPing ping)
+        private CallResult? HandleSocketOperation(SocketConnection connection, DateTime time, string? originalData, PionexSocketOperation message)
         {
-            var id = ExchangeHelpers.NextId();
-            _ = connection.SendAsync(id, new PionexSocketRequest
+            if (message.Operation == "PING")
             {
-                Operation = "PONG",
-                Timestamp = new DateTimeOffset(ping.Timestamp).ToUnixTimeMilliseconds()
-            }, 0);
+                var id = ExchangeHelpers.NextId();
+                _ = connection.SendAsync(id, new PionexSocketRequest
+                {
+                    Operation = "PONG",
+                    Timestamp = new DateTimeOffset(message.Timestamp).ToUnixTimeMilliseconds()
+                }, 0);
+            }
+            else if (message.Operation == "CLOSE")
+            {
+                if (message.Note?.Contains("rate limit", StringComparison.OrdinalIgnoreCase) == true)
+                    _logger.LogWarning("Server requested socket reconnect due to rate limiting");
+                else
+                    _logger.LogWarning("Server requested socket reconnect. Note: {Note}", message.Note);
+
+                _ = connection.TriggerReconnectAsync();
+            }
 
             return CallResult.SuccessResult;
         }

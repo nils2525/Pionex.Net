@@ -13,6 +13,7 @@ namespace Pionex.Net.Converters
     [JsonSerializable(typeof(PionexResult<PionexOrderBook>))]
     [JsonSerializable(typeof(PionexSocketEvent<PionexTrade[]>))]
     [JsonSerializable(typeof(PionexSocketError))]
+    [JsonSerializable(typeof(PionexSocketOperation))]
     [JsonSerializable(typeof(PionexSocketRequest))]
     [JsonSerializable(typeof(PionexPing))]
     [JsonSerializable(typeof(string))]

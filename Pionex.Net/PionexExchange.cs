@@ -88,7 +88,8 @@ namespace Pionex.Net
             PionexRestIp = new RateLimitGate("Pionex IP")
                 .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Request), 10, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding));
             PionexSocket = new RateLimitGate("Pionex Socket")
-                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Connection), 10, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding));
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerHost, new LimitItemTypeFilter(RateLimitItemType.Connection), 10, TimeSpan.FromMinutes(1), RateLimitWindowType.Sliding))
+                .AddGuard(new RateLimitGuard(RateLimitGuard.PerConnection, new LimitItemTypeFilter(RateLimitItemType.Request), 4, TimeSpan.FromSeconds(1), RateLimitWindowType.Sliding));
 
             PionexRestIp.RateLimitTriggered += x => RateLimitTriggered?.Invoke(x);
             PionexRestIp.RateLimitUpdated += x => RateLimitUpdated?.Invoke(x);

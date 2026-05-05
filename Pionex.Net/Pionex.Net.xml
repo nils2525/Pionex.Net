@@ -131,9 +131,6 @@
             Client providing access to the Pionex Spot websocket Api
             </summary>
         </member>
-        <member name="P:Pionex.Net.Clients.SpotApi.PionexSocketClientSpotApi.ErrorMapping">
-            <inheritdoc />
-        </member>
         <member name="M:Pionex.Net.Clients.SpotApi.PionexSocketClientSpotApi.#ctor(Pionex.Net.Clients.PionexSocketClient,Microsoft.Extensions.Logging.ILogger,Pionex.Net.Objects.Options.PionexSocketOptions)">
             <summary>
             ctor
@@ -290,6 +287,11 @@
             </summary>
         </member>
         <member name="P:Pionex.Net.Converters.PionexSourceGenerationContext.PionexSocketEventPionexTradeArray">
+            <summary>
+            Defines the source generated JSON serialization contract metadata for a given type.
+            </summary>
+        </member>
+        <member name="P:Pionex.Net.Converters.PionexSourceGenerationContext.PionexSocketOperation">
             <summary>
             Defines the source generated JSON serialization contract metadata for a given type.
             </summary>
@@ -855,12 +857,6 @@
             ctor
             </summary>
         </member>
-        <member name="P:Pionex.Net.Objects.Options.PionexSocketOptions.SubscribeMaxWaitForError">
-            <summary>
-            The server only replies with a message when there is an error in the subscription, not when it's successful. This timeout determines how
-            long to wait at max for an error message before the subscription is assumed successful.
-            </summary>
-        </member>
         <member name="P:Pionex.Net.Objects.Options.PionexSocketOptions.SpotOptions">
             <summary>
             Spot API options
@@ -914,7 +910,7 @@
         <member name="T:Pionex.Net.Objects.Sockets.Subscriptions.PionexSubscription`1">
             <inheritdoc />
         </member>
-        <member name="M:Pionex.Net.Objects.Sockets.Subscriptions.PionexSubscription`1.#ctor(Microsoft.Extensions.Logging.ILogger,CryptoExchange.Net.Clients.SocketApiClient,System.String,System.String,System.Action{System.DateTime,System.String,`0},System.Boolean,System.TimeSpan)">
+        <member name="M:Pionex.Net.Objects.Sockets.Subscriptions.PionexSubscription`1.#ctor(Microsoft.Extensions.Logging.ILogger,System.String,System.String,System.Action{System.DateTime,System.String,`0},System.Boolean)">
             <summary>
             ctor
             </summary>
