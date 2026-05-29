@@ -24,32 +24,38 @@ namespace Pionex.Net.Objects.Models
         /// ["<c>open</c>"] Open price
         /// </summary>
         [JsonPropertyName("open")]
-        public decimal OpenPrice { get; set; }
+        [JsonConverter(typeof(DecimalConverter))]
+        public decimal? OpenPrice { get; set; }
         /// <summary>
         /// ["<c>close</c>"] Close price
         /// </summary>
         [JsonPropertyName("close")]
-        public decimal ClosePrice { get; set; }
+        [JsonConverter(typeof(DecimalConverter))]
+        public decimal? ClosePrice { get; set; }
         /// <summary>
         /// ["<c>high</c>"] High price
         /// </summary>
         [JsonPropertyName("high")]
-        public decimal HighPrice { get; set; }
+        [JsonConverter(typeof(DecimalConverter))]
+        public decimal? HighPrice { get; set; }
         /// <summary>
         /// ["<c>low</c>"] Low price
         /// </summary>
         [JsonPropertyName("low")]
-        public decimal LowPrice { get; set; }
+        [JsonConverter(typeof(DecimalConverter))]
+        public decimal? LowPrice { get; set; }
         /// <summary>
         /// ["<c>volume</c>"] Base volume
         /// </summary>
         [JsonPropertyName("volume")]
-        public decimal Volume { get; set; }
+        [JsonConverter(typeof(DecimalConverter))]
+        public decimal? Volume { get; set; }
         /// <summary>
         /// ["<c>amount</c>"] Quote volume
         /// </summary>
         [JsonPropertyName("amount")]
-        public decimal QuoteVolume { get; set; }
+        [JsonConverter(typeof(DecimalConverter))]
+        public decimal? QuoteVolume { get; set; }
         /// <summary>
         /// ["<c>count</c>"] Trade count
         /// </summary>

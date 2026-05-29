@@ -18,25 +18,25 @@ namespace Pionex.Net.Objects.Models
         /// ["<c>bidPrice</c>"] Best bid price
         /// </summary>
         [JsonPropertyName("bidPrice")]
-        [JsonConverter(typeof(BigDecimalConverter))]
+        [JsonConverter(typeof(DecimalConverter))]
         public decimal? BestBidPrice { get; set; }
         /// <summary>
         /// ["<c>bidSize</c>"] Best bid quantity
         /// </summary>
         [JsonPropertyName("bidSize")]
-        [JsonConverter(typeof(BigDecimalConverter))]
+        [JsonConverter(typeof(DecimalConverter))]
         public decimal? BestBidQuantity { get; set; }
         /// <summary>
         /// ["<c>askPrice</c>"] Best ask price
         /// </summary>
         [JsonPropertyName("askPrice")]
-        [JsonConverter(typeof(BigDecimalConverter))]
+        [JsonConverter(typeof(DecimalConverter))]
         public decimal? BestAskPrice { get; set; }
         /// <summary>
         /// ["<c>askSize</c>"] Best ask quantity
         /// </summary>
         [JsonPropertyName("askSize")]
-        [JsonConverter(typeof(BigDecimalConverter))]
+        [JsonConverter(typeof(DecimalConverter))]
         public decimal? BestAskQuantity { get; set; }
         /// <summary>
         /// ["<c>timestamp</c>"] Timestamp
