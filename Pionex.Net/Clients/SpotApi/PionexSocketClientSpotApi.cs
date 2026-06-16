@@ -15,6 +15,7 @@ using Pionex.Net.Objects.Options;
 using Pionex.Net.Objects.Sockets;
 using Pionex.Net.Objects.Sockets.Subscriptions;
 using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -50,6 +51,17 @@ namespace Pionex.Net.Clients.SpotApi
         protected override IMessageSerializer CreateSerializer() => new SystemTextJsonMessageSerializer(PionexExchange._serializerContext);
         /// <inheritdoc />
         public override ISocketMessageHandler CreateMessageConverter(WebSocketMessageType messageType) => new PionexSocketMessageHandler();
+
+        /// <inheritdoc />
+        protected override bool HandleUnhandledMessage(SocketConnection connection, string typeIdentifier, ReadOnlySpan<byte> data)
+        {
+            if (typeIdentifier == "TRADE"
+                && (connection.Status is SocketStatus.Closing or SocketStatus.Closed or SocketStatus.Disposed
+                    || connection.Subscriptions.Any(s => s.Status is SubscriptionStatus.Closing or SubscriptionStatus.Closed)))
+                return true;
+
+            return base.HandleUnhandledMessage(connection, typeIdentifier, data);
+        }
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)

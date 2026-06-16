@@ -73,5 +73,35 @@ namespace Pionex.Net.Objects.Models
         /// </summary>
         [JsonPropertyName("enable")]
         public bool Enabled { get; set; }
+        /// <summary>
+        /// ["<c>contractType</c>"] Contract type for futures symbols
+        /// </summary>
+        [JsonPropertyName("contractType")]
+        public string? ContractType { get; set; }
+        /// <summary>
+        /// ["<c>baseStep</c>"] Base quantity step for futures symbols
+        /// </summary>
+        [JsonPropertyName("baseStep")]
+        public decimal? BaseStep { get; set; }
+        /// <summary>
+        /// ["<c>quoteStep</c>"] Price step for futures symbols
+        /// </summary>
+        [JsonPropertyName("quoteStep")]
+        public decimal? QuoteStep { get; set; }
+        /// <summary>
+        /// ["<c>minSizeLimit</c>"] Minimum order size for futures symbols
+        /// </summary>
+        [JsonPropertyName("minSizeLimit")]
+        public decimal? MinSizeLimit { get; set; }
+        /// <summary>
+        /// ["<c>maxSizeLimit</c>"] Maximum order size for futures symbols
+        /// </summary>
+        [JsonPropertyName("maxSizeLimit")]
+        public decimal? MaxSizeLimit { get; set; }
+        /// <summary>
+        /// ["<c>status</c>"] Trading status for futures symbols
+        /// </summary>
+        [JsonPropertyName("status")]
+        public string? Status { get; set; }
     }
 }
