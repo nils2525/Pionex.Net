@@ -42,7 +42,7 @@ namespace Pionex.Net.Clients
         {
             Initialize(options.Value);
 
-            SpotApi = AddApiClient(new PionexRestClientSpotApi(this, _logger, httpClient, options.Value));
+            SpotApi = AddApiClient(new PionexRestClientSpotApi(this, loggerFactory, httpClient, options.Value));
         }
 
         #endregion

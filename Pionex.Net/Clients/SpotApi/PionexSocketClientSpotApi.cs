@@ -36,14 +36,14 @@ namespace Pionex.Net.Clients.SpotApi
         /// <summary>
         /// ctor
         /// </summary>
-        internal PionexSocketClientSpotApi(PionexSocketClient baseClient, ILogger logger, PionexSocketOptions options) :
-            base(logger, options.Environment.SocketClientSpotAddress, options, options.SpotOptions)
+        internal PionexSocketClientSpotApi(PionexSocketClient baseClient, ILoggerFactory? loggerFactory, PionexSocketOptions options) :
+            base(loggerFactory, PionexExchange.Metadata.Id, options.Environment.SocketClientSpotAddress, options, options.SpotOptions)
         {
             _baseClient = baseClient;
 
             RateLimiter = PionexExchange.RateLimiter.PionexSocket;
 
-            AddSystemSubscription(new PionexPingSubscription(logger));
+            AddSystemSubscription(new PionexPingSubscription(_logger));
         }
         #endregion
 
@@ -72,7 +72,7 @@ namespace Pionex.Net.Clients.SpotApi
             => new PionexAuthenticationProvider(credentials);
 
         /// <inheritdoc />
-        public async Task<CallResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<PionexTrade[]>> onMessage, CancellationToken ct = default)
+        public async Task<WebSocketResult<UpdateSubscription>> SubscribeToTradeUpdatesAsync(string symbol, Action<DataEvent<PionexTrade[]>> onMessage, CancellationToken ct = default)
         {
             var internalHandler = new Action<DateTime, string?, PionexSocketEvent<PionexTrade[]>>((receiveTime, originalData, data) =>
             {

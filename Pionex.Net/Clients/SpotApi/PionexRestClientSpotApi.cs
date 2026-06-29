@@ -40,10 +40,10 @@ namespace Pionex.Net.Clients.SpotApi
         #endregion
 
         #region constructor/destructor
-        internal PionexRestClientSpotApi(PionexRestClient baseClient, ILogger logger, HttpClient? httpClient, PionexRestOptions options)
-            : base(logger, httpClient, options.Environment.RestClientSpotAddress, options, options.SpotOptions)
+        internal PionexRestClientSpotApi(PionexRestClient baseClient, ILoggerFactory? loggerFactory, HttpClient? httpClient, PionexRestOptions options)
+            : base(loggerFactory, PionexExchange.Metadata.Id, httpClient, options.Environment.RestClientSpotAddress, options, options.SpotOptions)
         {
-            ExchangeData = new PionexRestClientSpotApiExchangeData(logger, this);
+            ExchangeData = new PionexRestClientSpotApiExchangeData(this);
 
             StandardRequestHeaders = new Dictionary<string, string>
             {
@@ -59,15 +59,18 @@ namespace Pionex.Net.Clients.SpotApi
         protected override PionexAuthenticationProvider CreateAuthenticationProvider(PionexCredentials credentials)
             => new PionexAuthenticationProvider(credentials);
 
-        internal async Task<WebCallResult<T>> SendWrappedAsync<T>(RequestDefinition definition, ParameterCollection? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
+        internal async Task<HttpResult<T>> SendWrappedAsync<T>(RequestDefinition definition, Parameters? parameters, CancellationToken cancellationToken, int? weight = null) where T : class
         {
-            var result = await base.SendAsync<PionexResult<T>>(BaseAddress, definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
-            return result.As<T>(result.Data?.Data);
+            var result = await base.SendAsync<PionexResult<T>>(definition, parameters, cancellationToken, null, weight).ConfigureAwait(false);
+            if (!result.Success)
+                return HttpResult.Fail<T>(result);
+
+            return HttpResult.Ok(result, result.Data.Data);
         }
 
         /// <inheritdoc />
-        protected override Task<WebCallResult<DateTime>> GetServerTimestampAsync()
-            => Task.FromResult(new WebCallResult<DateTime>(null, null, null, null, null, null, null, null, null, null, null, ResultDataSource.Server, DateTime.UtcNow, null));
+        protected override Task<HttpResult<DateTime>> GetServerTimestampAsync()
+            => Task.FromResult(new HttpResult<DateTime>(PionexExchange.Metadata.Id, DateTime.UtcNow, null));
 
         /// <inheritdoc />
         public override string FormatSymbol(string baseAsset, string quoteAsset, TradingMode tradingMode, DateTime? deliverDate = null)

@@ -29,7 +29,7 @@ namespace Pionex.Net.Objects.Sockets.Subscriptions
             _topic = topic;
             _symbol = symbol;
 
-            MessageRouter = MessageRouter.CreateWithTopicFilter<T>(topic, symbol, DoHandleMessage);
+            MessageRouter = MessageRouter.CreateForEvent<T>(topic, symbol, DoHandleMessage);
         }
 
         /// <inheritdoc />
@@ -58,7 +58,7 @@ namespace Pionex.Net.Objects.Sockets.Subscriptions
         public CallResult DoHandleMessage(SocketConnection connection, DateTime receiveTime, string? originalData, T message)
         {
             _handler.Invoke(receiveTime, originalData, message);
-            return new CallResult(null);
+            return CallResult.Ok();
         }
     }
 }

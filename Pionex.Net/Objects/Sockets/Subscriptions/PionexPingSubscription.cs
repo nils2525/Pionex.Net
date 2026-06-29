@@ -12,7 +12,7 @@ namespace Pionex.Net.Objects.Sockets.Subscriptions
     {
         public PionexPingSubscription(ILogger logger) : base(logger, false)
         {
-            MessageRouter = MessageRouter.CreateWithoutTopicFilter<PionexSocketOperation>(["PING", "CLOSE"], HandleSocketOperation);
+            MessageRouter = MessageRouter.CreateForEvent<PionexSocketOperation>(["PING", "CLOSE"], HandleSocketOperation);
         }
 
         private CallResult? HandleSocketOperation(SocketConnection connection, DateTime time, string? originalData, PionexSocketOperation message)
@@ -36,7 +36,7 @@ namespace Pionex.Net.Objects.Sockets.Subscriptions
                 _ = connection.TriggerReconnectAsync();
             }
 
-            return CallResult.SuccessResult;
+            return CallResult.Ok();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Pionex.Net.Clients.SpotApi
         private readonly PionexRestClientSpotApi _baseClient;
         private static readonly RequestDefinitionCache _definitions = new RequestDefinitionCache();
 
-        internal PionexRestClientSpotApiExchangeData(ILogger logger, PionexRestClientSpotApi baseClient)
+        internal PionexRestClientSpotApiExchangeData(PionexRestClientSpotApi baseClient)
         {
             _baseClient = baseClient;
         }
@@ -24,14 +24,16 @@ namespace Pionex.Net.Clients.SpotApi
         #region Get Symbols
 
         /// <inheritdoc />
-        public async Task<WebCallResult<PionexSymbol[]>> GetSymbolsAsync(IEnumerable<string>? symbols = null, MarketType? type = MarketType.Spot, CancellationToken ct = default)
+        public async Task<HttpResult<PionexSymbol[]>> GetSymbolsAsync(IEnumerable<string>? symbols = null, MarketType? type = MarketType.Spot, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptionalCommaSeparated("symbols", symbols);
-            parameters.AddOptionalEnum("type", type);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/api/v1/common/symbols", PionexExchange.RateLimiter.PionexRestIp, 5, false);
+            var parameters = new Parameters(PionexExchange._parameterSerializationSettings);
+            parameters.AddCommaSeparated("symbols", symbols);
+            parameters.Add("type", type);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/common/symbols", PionexExchange.RateLimiter.PionexRestIp, 5, false);
             var result = await _baseClient.SendWrappedAsync<PionexSymbols>(request, parameters, ct).ConfigureAwait(false);
-            return result.As<PionexSymbol[]>(result.Data?.Symbols);
+            return result.Success
+                ? HttpResult.Ok(result, result.Data.Symbols)
+                : HttpResult.Fail<PionexSymbol[]>(result);
         }
 
         #endregion
@@ -39,16 +41,18 @@ namespace Pionex.Net.Clients.SpotApi
         #region Get Recent Trades
 
         /// <inheritdoc />
-        public async Task<WebCallResult<PionexTrade[]>> GetRecentTradesAsync(string symbol, int? limit = null, CancellationToken ct = default)
+        public async Task<HttpResult<PionexTrade[]>> GetRecentTradesAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(PionexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol }
             };
-            parameters.AddOptional("limit", limit);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/api/v1/market/trades", PionexExchange.RateLimiter.PionexRestIp, 1, false);
+            parameters.Add("limit", limit);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/market/trades", PionexExchange.RateLimiter.PionexRestIp, 1, false);
             var result = await _baseClient.SendWrappedAsync<PionexTrades>(request, parameters, ct).ConfigureAwait(false);
-            return result.As<PionexTrade[]>(result.Data?.Trades);
+            return result.Success
+                ? HttpResult.Ok(result, result.Data.Trades)
+                : HttpResult.Fail<PionexTrade[]>(result);
         }
 
         #endregion
@@ -56,14 +60,14 @@ namespace Pionex.Net.Clients.SpotApi
         #region Get Order Book
 
         /// <inheritdoc />
-        public async Task<WebCallResult<PionexOrderBook>> GetOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
+        public async Task<HttpResult<PionexOrderBook>> GetOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection
+            var parameters = new Parameters(PionexExchange._parameterSerializationSettings)
             {
                 { "symbol", symbol }
             };
-            parameters.AddOptional("limit", limit);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/api/v1/market/depth", PionexExchange.RateLimiter.PionexRestIp, 1, false);
+            parameters.Add("limit", limit);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/market/depth", PionexExchange.RateLimiter.PionexRestIp, 1, false);
             return await _baseClient.SendWrappedAsync<PionexOrderBook>(request, parameters, ct).ConfigureAwait(false);
         }
 
@@ -72,14 +76,16 @@ namespace Pionex.Net.Clients.SpotApi
         #region Get Tickers
 
         /// <inheritdoc />
-        public async Task<WebCallResult<PionexTicker[]>> GetTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default)
+        public async Task<HttpResult<PionexTicker[]>> GetTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("symbol", symbol);
-            parameters.AddOptionalEnum("type", type);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/api/v1/market/tickers", PionexExchange.RateLimiter.PionexRestIp, 1, false);
+            var parameters = new Parameters(PionexExchange._parameterSerializationSettings);
+            parameters.Add("symbol", symbol);
+            parameters.Add("type", type);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/market/tickers", PionexExchange.RateLimiter.PionexRestIp, 1, false);
             var result = await _baseClient.SendWrappedAsync<PionexTickers>(request, parameters, ct).ConfigureAwait(false);
-            return result.As<PionexTicker[]>(result.Data?.Tickers);
+            return result.Success
+                ? HttpResult.Ok(result, result.Data.Tickers)
+                : HttpResult.Fail<PionexTicker[]>(result);
         }
 
         #endregion
@@ -87,14 +93,16 @@ namespace Pionex.Net.Clients.SpotApi
         #region Get Book Tickers
 
         /// <inheritdoc />
-        public async Task<WebCallResult<PionexBookTicker[]>> GetBookTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default)
+        public async Task<HttpResult<PionexBookTicker[]>> GetBookTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default)
         {
-            var parameters = new ParameterCollection();
-            parameters.AddOptional("symbol", symbol);
-            parameters.AddOptionalEnum("type", type);
-            var request = _definitions.GetOrCreate(HttpMethod.Get, "/api/v1/market/bookTickers", PionexExchange.RateLimiter.PionexRestIp, 1, false);
+            var parameters = new Parameters(PionexExchange._parameterSerializationSettings);
+            parameters.Add("symbol", symbol);
+            parameters.Add("type", type);
+            var request = _definitions.GetOrCreate(HttpMethod.Get, _baseClient.BaseAddress, "/api/v1/market/bookTickers", PionexExchange.RateLimiter.PionexRestIp, 1, false);
             var result = await _baseClient.SendWrappedAsync<PionexBookTickers>(request, parameters, ct).ConfigureAwait(false);
-            return result.As<PionexBookTicker[]>(result.Data?.Tickers);
+            return result.Success
+                ? HttpResult.Ok(result, result.Data.Tickers)
+                : HttpResult.Fail<PionexBookTicker[]>(result);
         }
 
         #endregion

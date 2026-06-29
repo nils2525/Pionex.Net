@@ -27,10 +27,17 @@ namespace Pionex.Net
                 "https://www.pionex.com/",
                 ["https://www.pionex.com/docs/api-docs/readme/change-log"],
                 PlatformType.CryptoCurrencyExchange,
-                CentralizationType.Centralized
+                CentralizationType.Centralized,
+                PionexEnvironment.All
                 );
 
         internal static JsonSerializerOptions _serializerContext = SerializerOptions.WithConverters(JsonSerializerContextCache.GetOrCreate<PionexSourceGenerationContext>());
+        internal static readonly ParameterSerializationSettings _parameterSerializationSettings = new()
+        {
+            Decimal = DecimalSerialization.String,
+            Array = ArrayParametersSerialization.MultipleValues,
+            Sort = false
+        };
 
         /// <summary>
         /// Aliases for Pionex assets

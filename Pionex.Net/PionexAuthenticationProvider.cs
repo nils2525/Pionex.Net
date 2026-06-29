@@ -19,23 +19,28 @@ namespace Pionex.Net
 
         public override void ProcessRequest(RestApiClient apiClient, RestRequestConfiguration requestConfig)
         {
-            if (!requestConfig.Authenticated)
+            if (!requestConfig.RequestDefinition.Authenticated)
                 return;
 
             var timestamp = GetMillisecondTimestampLong(apiClient);
-            requestConfig.QueryParameters ??= new Dictionary<string, object>();
+            requestConfig.QueryParameters ??= new Parameters(PionexExchange._parameterSerializationSettings);
             requestConfig.QueryParameters["timestamp"] = timestamp;
 
-            var orderedParameters = requestConfig.QueryParameters
-                .OrderBy(p => p.Key)
-                .ToDictionary(p => p.Key, p => p.Value);
+            var orderedParameters = new Parameters(new ParameterSerializationSettings
+            {
+                Decimal = DecimalSerialization.String,
+                Array = ArrayParametersSerialization.MultipleValues,
+                Sort = true
+            });
+            foreach (var parameter in requestConfig.QueryParameters.OrderBy(p => p.Key))
+                orderedParameters.Add(parameter.Key, parameter.Value);
             requestConfig.QueryParameters = orderedParameters;
 
             var queryString = requestConfig.GetQueryString(false);
-            var pathUrl = string.IsNullOrEmpty(queryString) ? requestConfig.Path : requestConfig.Path + "?" + queryString;
+            var pathUrl = string.IsNullOrEmpty(queryString) ? requestConfig.RequestDefinition.Path : requestConfig.RequestDefinition.Path + "?" + queryString;
             requestConfig.SetQueryString(queryString);
 
-            var signString = requestConfig.Method.Method.ToUpperInvariant() + pathUrl;
+            var signString = requestConfig.RequestDefinition.Method.Method.ToUpperInvariant() + pathUrl;
             if (requestConfig.BodyParameters != null)
             {
                 var body = GetSerializedBody(_messageSerializer, requestConfig.BodyParameters);

@@ -24,7 +24,7 @@ namespace Pionex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbols">["<c>symbols</c>"] Filter by symbols, for example `BTC_USDT,ETH_USDT`</param>
         /// <param name="type">["<c>type</c>"] Market type</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PionexSymbol[]>> GetSymbolsAsync(IEnumerable<string>? symbols = null, MarketType? type = MarketType.Spot, CancellationToken ct = default);
+        Task<HttpResult<PionexSymbol[]>> GetSymbolsAsync(IEnumerable<string>? symbols = null, MarketType? type = MarketType.Spot, CancellationToken ct = default);
 
         /// <summary>
         /// Get recent trades
@@ -38,7 +38,7 @@ namespace Pionex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">["<c>symbol</c>"] The symbol, for example `BTC_USDT`</param>
         /// <param name="limit">["<c>limit</c>"] Max number of results, max 500</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PionexTrade[]>> GetRecentTradesAsync(string symbol, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<PionexTrade[]>> GetRecentTradesAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get order book snapshot
@@ -52,7 +52,7 @@ namespace Pionex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">["<c>symbol</c>"] The symbol, for example `BTC_USDT`</param>
         /// <param name="limit">["<c>limit</c>"] Max number of rows, max 1000</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PionexOrderBook>> GetOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
+        Task<HttpResult<PionexOrderBook>> GetOrderBookAsync(string symbol, int? limit = null, CancellationToken ct = default);
 
         /// <summary>
         /// Get 24-hour price change statistics
@@ -66,7 +66,7 @@ namespace Pionex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">["<c>symbol</c>"] Filter by symbol, for example `BTC_USDT`</param>
         /// <param name="type">["<c>type</c>"] Market type</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PionexTicker[]>> GetTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default);
+        Task<HttpResult<PionexTicker[]>> GetTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default);
 
         /// <summary>
         /// Get best bid/ask prices
@@ -80,6 +80,6 @@ namespace Pionex.Net.Interfaces.Clients.SpotApi
         /// <param name="symbol">["<c>symbol</c>"] Filter by symbol, for example `BTC_USDT`</param>
         /// <param name="type">["<c>type</c>"] Market type</param>
         /// <param name="ct">Cancellation token</param>
-        Task<WebCallResult<PionexBookTicker[]>> GetBookTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default);
+        Task<HttpResult<PionexBookTicker[]>> GetBookTickersAsync(string? symbol = null, MarketType? type = MarketType.Spot, CancellationToken ct = default);
     }
 }
