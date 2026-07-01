@@ -3,6 +3,7 @@ using Pionex.Net.Objects.Models;
 using Pionex.Net.Objects.Sockets;
 using System;
 using System.Text.Json.Serialization;
+using CryptoExchange.Net.Objects;
 
 namespace Pionex.Net.Converters
 {
@@ -26,6 +27,7 @@ namespace Pionex.Net.Converters
     [JsonSerializable(typeof(decimal?))]
     [JsonSerializable(typeof(DateTime))]
     [JsonSerializable(typeof(DateTime?))]
+    [JsonSerializable(typeof(Parameters))]
     internal partial class PionexSourceGenerationContext : JsonSerializerContext
     {
     }
